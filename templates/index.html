@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>这是一个测试</title>
+</head>
+<body>
+    <div id="divTb">
+
+    </div>
+<!--    <table border="1">-->
+<!--        <thead>-->
+<!--            <tr>-->
+<!--                <th colspan="8" class="ip"></th>-->
+<!--            </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--            <tr>-->
+<!--                <td class="id">Id</td>-->
+<!--                <td>Name</td>-->
+<!--                <td>Temperature</td>-->
+<!--                <td>GpuUtilization</td>-->
+<!--                <td>MemoryUtilization</td>-->
+<!--                <td>MemoryUsed/MB</td>-->
+<!--                <td>MemoryFree/MB</td>-->
+<!--                <td>MemoryTotal/MB</td>-->
+<!--            </tr>-->
+<!--            {tr}-->
+<!--        </tbody>-->
+<!--    </table>-->
+
+</body>
+<script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+<script type="text/javascript">
+    var getting = {
+        url:'/watch_nvidia_info',
+        type:'get',
+        contentType:"application/json",
+        dataType:'json',
+        success:function(res) {
+            var htm = "";
+            for(var ip in res) {
+                htm += "<table border='1'>"
+                htm += "<thead align='center'><tr><td colspan='8'>";
+                //ip
+                htm += ip;
+                htm += "</td></tr></thead>";
+
+                htm += "<tbody>";
+                //表头
+                htm += "<tr>";
+                var gpus = JSON.parse(res[ip]);
+                for (var k in gpus[0]) { //
+                    htm += "<td style='width: 230px'>" + k + "</td>";
+                }
+                htm += "</tr>";
+                //表内数据
+                for (var id in gpus) {
+                    htm += "<tr>";
+                    for (var k in gpus[id]) {
+                        htm += "<td>" + gpus[id][k] + "</td>";
+                    }
+                    htm += "</tr>";
+                }
+                htm += "</tbody></table>";
+
+            }
+            $("#divTb").html(htm);
+        },
+    error: function (jqXHR, exception) {
+        var msg = '';
+        if (jqXHR.status === 0) {
+            msg = 'Not connect.\n Verify Network.';
+        } else if (jqXHR.status === 404) {
+            msg = 'Requested page not found. [404]';
+        } else if (jqXHR.status === 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = 'Uncaught Error.\n' + jqXHR.responseText;
+        }
+        alert(msg);
+        }
+    };
+    window.setInterval(function(){$.ajax(getting)},1000);
+</script>
+</html>
