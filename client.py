@@ -4,10 +4,11 @@ from flask import Flask, request, url_for, redirect, render_template
 import requests
 import color
 import logging
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
 
 app = Flask(__name__, template_folder='templates')
 all_info = {}
-logging.getLogger("requests").setLevel(logging.WARNING)
 
 # 客户端,只用来发送请求
 
