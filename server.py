@@ -8,6 +8,10 @@ import os
 import color
 import psutil
 import copy
+import logging
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
+
 app = Flask(__name__)
 
 
