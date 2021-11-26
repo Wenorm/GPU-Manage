@@ -5,9 +5,16 @@ from pynvml import *
 from flask import Flask, request, url_for, redirect, render_template
 from datetime import timedelta
 import os
+import color
 import psutil
 import copy
 app = Flask(__name__)
+
+
+begin = [0, 255, 0]
+end = [255, 0, 0]
+cnt = 11
+colors = color.get_multi_colors_by_hsl(begin, end, cnt)
 
 #服务端，只用来查询
 @app.route('/get_nvidia_info', methods=['post'])

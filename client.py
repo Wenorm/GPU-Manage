@@ -7,11 +7,6 @@ app = Flask(__name__, template_folder='templates')
 
 all_info = {}
 
-begin = [0, 255, 0]
-end = [255, 0, 0]
-cnt = 11
-colors = color.get_multi_colors_by_hsl(begin, end, cnt)
-
 # 客户端,只用来发送请求
 
 @app.route('/', methods=['get', 'post'])
