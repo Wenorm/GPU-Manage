@@ -3,9 +3,11 @@ from pynvml import *
 from flask import Flask, request, url_for, redirect, render_template
 import requests
 import color
-app = Flask(__name__, template_folder='templates')
+import logging
 
+app = Flask(__name__, template_folder='templates')
 all_info = {}
+logging.getLogger("requests").setLevel(logging.WARNING)
 
 # 客户端,只用来发送请求
 
@@ -16,13 +18,16 @@ def home():
 def update_nvidia_info():
     global all_info
     with open('iplist.txt', mode='r', encoding='utf-8')as f:
-        ips = f.readlines()
+        data = f.readlines()
+    address = []
+    for d in data:
+        ip, port = d.strip().split()
+        address.append((ip, port))
     while True:
         headers = {'content-type': 'application/json'}
-        for ip in ips:
-            ip = ip.strip()
+        for ip, port in address:
             try:
-                res = requests.post(url='http://'+ip+':29454/get_nvidia_info', headers=headers)
+                res = requests.post(url='http://' + ip + ':' + str(port) + '/get_nvidia_info', headers=headers)
                 if res.status_code != 200:
                     continue
                 all_info[ip] = res.text
