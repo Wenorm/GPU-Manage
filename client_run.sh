@@ -1,0 +1,1 @@
+nohup python client.py >> client.log 2>&1 &

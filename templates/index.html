@@ -6,38 +6,50 @@
 </head>
 <body>
     <div id="divTb">
-
     </div>
 </body>
 <script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
 <script type="text/javascript">
+    const keys = ["Id", "Name", "Temperature", "GpuUtilization", "MemoryUsed", "MemoryFree", "MemoryTotal", "User:Pid:Mem"];
+    const t_head = "<tr>" +
+                    "<td style='width:50px'>Id</td>" +
+                    "<td style='width:230px'>Name</td>" +
+                    "<td style='width:150'>Temperature</td>" +
+                    "<td style='width:150px'>GpuUtilization</td>" +
+                    "<td style='width:150px'>MemoryUsed</td>" +
+                    "<td style='width:150px'>MemoryFree</td>" +
+                    "<td style='width:150px'>MemoryTotal</td>" +
+                    "<td style='width:250px'>User:Pid:Mem</td>" +
+                    "</tr>";
     var getting = {
         url:'/watch_nvidia_info',
         type:'get',
         contentType:"application/json",
         dataType:'json',
         success:function(res) {
-            var htm = "";
-            for(var ip in res) {
+            let htm = "";
+            for(const ip in res) {  //ip是下标
                 htm += "<table border='1'>"
                 htm += "<thead align='center'><tr><td colspan='8'>";
                 //ip
                 htm += ip;
-                htm += "</td></tr></thead>";
-
-                htm += "<tbody>";
+                htm += "</td></tr></thead><tbody>";
                 //表头
-                htm += "<tr>";
-                var gpus = JSON.parse(res[ip]);
-                for (var k in gpus[0]) { //
-                    htm += "<td style='width: 230px'>" + k + "</td>";
-                }
-                htm += "</tr>";
+                htm += t_head;
                 //表内数据
-                for (var id in gpus) {
+                const gpus = JSON.parse(res[ip]);  //所有卡
+                for (const id in gpus) {  //卡下标
                     htm += "<tr>";
-                    for (var k in gpus[id]) {
-                        htm += "<td>" + gpus[id][k] + "</td>";
+                    for (const k of keys) {  //卡key值
+                        if(k==="Temperature") {
+                            htm += "<td style=color:" + gpus[id]["TemperatureRGB"] +">" + gpus[id][k] + "</td>";
+                        }
+                        else if(k==="GpuUtilization"){
+                            htm += "<td style=color:" + gpus[id]["GpuUtilizationRGB"] +">" + gpus[id][k] + "</td>";
+                        }
+                        else{
+                             htm += "<td>" + gpus[id][k] + "</td>";
+                        }
                     }
                     htm += "</tr>";
                 }
